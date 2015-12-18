@@ -8,3 +8,7 @@ Unter Debian/Ubuntu sollte folgende Paketinstallation reichen:
 ```
 $ sudo apt-get install make g++ libboost-date-time-dev texlive
 ```
+Einen aktuellen Plan erzeugst du mit:
+```
+$ make clean Putzplan.pdf
+```
