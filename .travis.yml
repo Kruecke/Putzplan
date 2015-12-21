@@ -1,0 +1,5 @@
+language: cpp
+install:
+    - sudo apt-get install -qq make g++ libboost-date-time-dev texlive
+script:
+    - make
