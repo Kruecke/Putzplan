@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+// Debug:
+#include <iostream>
 
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
@@ -26,13 +28,20 @@ int main (int argc, char **argv) {
     const auto begin = today.day_of_week() == cal::Monday ? today : fwdbf.get_date(today);
 
     // ----- Programm Optionen ----
-    po::option_description desc("Programm Optionen");
+    po::options_description desc("Programm Optionen");
     desc.add_options()
-        ("help", "bla blubb")
-        ("Ausnahmen", po::value<int>(), "bla");
+        ("Ausnahmen", po::value<std::vector<int>>()->multitoken(),
+            "z.B. 'S102 = 4' für keine Aufgabe 4 für S102.");
 
     po::variables_map vm;
+    std::ifstream config("config.ini");
+    po::store(po::parse_config_file(config, desc), vm);
+    po::notify(vm);
     // TODO...
+
+    // Debug:
+    for (auto option : vm)
+        std::cout << option.first << " = " << option.second.as<std::string>() << "\n";
 
     // ----- Generiere Plan -----
     for (std::string seite : {"r", "s"}) {
@@ -59,5 +68,6 @@ int main (int argc, char **argv) {
         }
     }
 
+	//system("pause");
     return 0;
 }
