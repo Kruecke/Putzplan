@@ -10,10 +10,10 @@
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
 
-int main (int argc, char **argv) {
+int main(int argc, char **argv) {
     // ----- Feste Einstellungen -----
     const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
-    const std::vector<std::string> rooms = {
+    const std::vector<std::string> rooms_tex = {
         "\\aaa", "\\bbb", "\\ccc", "\\ddd", "\\eee", "\\fff"};
     const int task_cols = 5;
 
@@ -29,9 +29,13 @@ int main (int argc, char **argv) {
 
     // ----- Programm Optionen ----
     po::options_description desc("Programm Optionen");
-    desc.add_options()
-        ("Ausnahmen", po::value<std::vector<int>>()->multitoken(),
-            "z.B. 'S102 = 4' für keine Aufgabe 4 für S102.");
+    for (std::string site : {"R", "S"})
+        for (std::string number : {"101", "102", "103", "104", "105", "106"})
+            desc.add_options()(("Ausnahmen." + site + number).c_str(),
+                po::value<std::vector<int>>()->multitoken(), "...");
+
+    // Debug:
+    std::cout << desc << "\n";
 
     po::variables_map vm;
     std::ifstream config("config.ini");
@@ -40,13 +44,17 @@ int main (int argc, char **argv) {
     // TODO...
 
     // Debug:
-    for (auto option : vm)
-        std::cout << option.first << " = " << option.second.as<std::string>() << "\n";
+    for (auto option : vm) {
+        std::cout << option.first << " =";
+        for (auto arg : option.second.as<std::vector<int>>())
+            std::cout << " " << arg;
+        std::cout << "\n";
+    }
 
     // ----- Generiere Plan -----
-    for (std::string seite : {"r", "s"}) {
+    for (std::string site : {"r", "s"}) {
         cal::week_iterator week_it(begin);
-        std::ofstream fout("dates_" + seite + ".txt", std::ios::trunc);
+        std::ofstream fout("dates_" + site + ".txt", std::ios::trunc);
 
         for (int i = 0; i < weeks_to_print; ++i) {
             const auto week_begin = *week_it;
@@ -60,8 +68,8 @@ int main (int argc, char **argv) {
 
             const int diff = (week_begin - start).days() / 7;
             for (int j = 0; j < task_cols; ++j) {
-                const int index = (j - diff) % (int) rooms.size();
-                fout << " & " << rooms[(index + rooms.size()) % rooms.size()];
+                const int index = (j - diff) % (int) rooms_tex.size();
+                fout << " & " << rooms_tex[(index + rooms_tex.size()) % rooms_tex.size()];
             }
 
             fout << " \\\\\n";
