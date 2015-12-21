@@ -1,0 +1,4 @@
+# Hier kann angegeben werden, welche Aufgaben ein Zimmer *nicht* bekommen soll.
+[Ausnahmen]
+S102 = 4, 5 # Duschen und Toiletten
+S103 = 4, 5 # Duschen und Toiletten

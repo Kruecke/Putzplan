@@ -1,13 +1,16 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/program_options.hpp>
 #include <fstream>
 #include <iomanip>
 #include <string>
 #include <vector>
 
 namespace cal = boost::gregorian;
+namespace po  = boost::program_options;
 
 int main (int argc, char **argv) {
-    const int weeks_to_print = 15; // Anzahl der Wochen fuer die Vorlage
+    // ----- Feste Einstellungen -----
+    const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
     const std::vector<std::string> rooms = {
         "\\aaa", "\\bbb", "\\ccc", "\\ddd", "\\eee", "\\fff"};
     const int task_cols = 5;
@@ -22,25 +25,38 @@ int main (int argc, char **argv) {
     const auto today = cal::date(cal::day_clock::local_day());
     const auto begin = today.day_of_week() == cal::Monday ? today : fwdbf.get_date(today);
 
-    cal::week_iterator week_it(begin);
-    std::ofstream fout("dates.txt", std::ios::trunc);
-    for (int i = 0; i < weeks_to_print; ++i) {
-        const auto week_begin = *week_it;
-        const auto week_end   = *++week_it - cal::days(1);
+    // ----- Programm Optionen ----
+    po::option_description desc("Programm Optionen");
+    desc.add_options()
+        ("help", "bla blubb")
+        ("Ausnahmen", po::value<int>(), "bla");
 
-        fout << std::setw(2) << std::setfill('0') << week_begin.week_number() // Kalenderwoche
-            << " & " << std::setw(2) << std::setfill('0') << (int) week_begin.day()   << "."
-                     << std::setw(2) << std::setfill('0') << (int) week_begin.month() << "."
-            << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
-                     << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
+    po::variables_map vm;
+    // TODO...
 
-        const int diff = (week_begin - start).days() / 7;
-        for (int j = 0; j < task_cols; ++j) {
-            const int index = (j - diff) % (int) rooms.size();
-            fout << " & " << rooms[(index + rooms.size()) % rooms.size()];
+    // ----- Generiere Plan -----
+    for (std::string seite : {"r", "s"}) {
+        cal::week_iterator week_it(begin);
+        std::ofstream fout("dates_" + seite + ".txt", std::ios::trunc);
+
+        for (int i = 0; i < weeks_to_print; ++i) {
+            const auto week_begin = *week_it;
+            const auto week_end   = *++week_it - cal::days(1);
+
+            fout << std::setw(2) << std::setfill('0') << week_begin.week_number() // Kalenderwoche
+                 << " & " << std::setw(2) << std::setfill('0') << (int) week_begin.day()   << "."
+                          << std::setw(2) << std::setfill('0') << (int) week_begin.month() << "."
+                 << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
+                          << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
+
+            const int diff = (week_begin - start).days() / 7;
+            for (int j = 0; j < task_cols; ++j) {
+                const int index = (j - diff) % (int) rooms.size();
+                fout << " & " << rooms[(index + rooms.size()) % rooms.size()];
+            }
+
+            fout << " \\\\\n";
         }
-
-        fout << " \\\\\n";
     }
 
     return 0;

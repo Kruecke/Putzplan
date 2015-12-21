@@ -1,10 +1,10 @@
 all: Putzplan.pdf
 
-Putzplan.pdf: Putzplan.tex dates.txt
+Putzplan.pdf: Putzplan.tex dates_r.txt dates_s.txt
 	pdflatex $<
 
-dates.txt: dates
-	./dates
+dates_r.txt dates_s.txt: dates config.txt
+	./$<
 
 dates: dates.cpp
 	$(CXX) -Wall -std=c++11 -o $@ $^
@@ -12,6 +12,7 @@ dates: dates.cpp
 .PHONY: clean
 clean:
 	rm -f dates
-	rm -f dates.txt
+	rm -f dates_r.txt
+	rm -f dates_s.txt
 	rm -f Putzplan.log
 	rm -f Putzplan.aux

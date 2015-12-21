@@ -6,7 +6,7 @@ Zum Generieren des Plans brauchst du `make`, einen C++ Compiler (z.B. `gcc`) sow
 
 Unter Debian/Ubuntu reichen folgende Paketinstallationen:
 ```
-$ sudo apt-get install make g++ libboost-date-time-dev texlive texlive-lang-german
+$ sudo apt-get install make g++ libboost-date-time-dev libboost-program-options-dev texlive texlive-lang-german
 ```
 
 Einen aktuellen Plan erzeugst du mit:

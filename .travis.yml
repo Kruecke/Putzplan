@@ -7,7 +7,7 @@ dist: trusty
 before_install:
     - sudo apt-get update -qq
 install:
-    - sudo apt-get install -qq make g++ libboost-date-time-dev texlive texlive-lang-german
+    - sudo apt-get install -qq make g++ libboost-date-time-dev libboost-program-options-dev texlive texlive-lang-german
 
 script:
     - make
