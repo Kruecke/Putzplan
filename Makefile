@@ -1,13 +1,15 @@
+CXXFLAGS := -std=c++11 -Wall
+LDLIBS   := -lboost_program_options
+
 all: Putzplan.pdf
 
 Putzplan.pdf: Putzplan.tex dates_r.txt dates_s.txt
 	pdflatex $<
 
-dates_r.txt dates_s.txt: dates config.txt
+dates_r.txt dates_s.txt: dates config.ini
 	./$<
 
 dates: dates.cpp
-	$(CXX) -Wall -std=c++11 -o $@ $^
 
 .PHONY: clean
 clean:

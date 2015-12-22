@@ -2,6 +2,7 @@
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iomanip>
+#include <map>
 #include <string>
 #include <vector>
 // Debug:
@@ -29,25 +30,25 @@ int main(int argc, char **argv) {
 
     // ----- Programm Optionen ----
     po::options_description desc("Programm Optionen");
+    std::map<std::string, std::vector<int>> exceptions;
     for (std::string site : {"R", "S"})
         for (std::string number : {"101", "102", "103", "104", "105", "106"})
             desc.add_options()(("Ausnahmen." + site + number).c_str(),
-                po::value<std::vector<int>>()->multitoken(), "...");
+                po::value<std::vector<int>>(&exceptions[site + number])->multitoken(), "...");
 
     // Debug:
-    std::cout << desc << "\n";
+    //std::cout << desc << "\n";
 
     po::variables_map vm;
     std::ifstream config("config.ini");
     po::store(po::parse_config_file(config, desc), vm);
     po::notify(vm);
-    // TODO...
 
     // Debug:
-    for (auto option : vm) {
-        std::cout << option.first << " =";
-        for (auto arg : option.second.as<std::vector<int>>())
-            std::cout << " " << arg;
+    for (auto kv : exceptions) {
+        std::cout << kv.first << " =";
+        for (auto v : kv.second)
+            std::cout << " " << v;
         std::cout << "\n";
     }
 
