@@ -11,7 +11,7 @@
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
 
-int main(int argc, char **argv) {
+void schedule(std::ofstream &fout) {
     // ----- Feste Einstellungen -----
     const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
     const std::vector<std::string> rooms_tex = {
@@ -28,6 +28,32 @@ int main(int argc, char **argv) {
     const auto today = cal::date(cal::day_clock::local_day());
     const auto begin = today.day_of_week() == cal::Monday ? today : fwdbf.get_date(today);
 
+    // ----- Generiere Plan -----
+    cal::week_iterator week_it(begin);
+    for (int i = 0; i < weeks_to_print; ++i) {
+        const auto week_begin = *week_it;
+        const auto week_end   = *++week_it - cal::days(1);
+
+        // Wochenkopf (linke Spalten)
+        fout << std::setw(2) << std::setfill('0') << week_begin.week_number() // Kalenderwoche
+             << " & " << std::setw(2) << std::setfill('0') << (int) week_begin.day()   << "."
+                      << std::setw(2) << std::setfill('0') << (int) week_begin.month() << "."
+             << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
+                      << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
+
+        const int diff = (week_begin - start).days() / 7;
+        for (int j = 0; j < task_cols; ++j) {
+            const int rsize = rooms_tex.size();
+            const int index = (((j - diff) % rsize) + rsize) % rsize;
+
+            fout << " & " << rooms_tex[index];
+        }
+
+        fout << " \\\\\n";
+    }
+}
+
+int main(int argc, char **argv) {
     // ----- Programm Optionen ----
     po::options_description desc("Programm Optionen");
     std::map<std::string, std::vector<int>> exceptions;
@@ -36,15 +62,13 @@ int main(int argc, char **argv) {
             desc.add_options()(("Ausnahmen." + site + number).c_str(),
                 po::value<std::vector<int>>(&exceptions[site + number])->multitoken(), "...");
 
-    // Debug:
-    //std::cout << desc << "\n";
-
     po::variables_map vm;
     std::ifstream config("config.ini");
     po::store(po::parse_config_file(config, desc), vm);
     po::notify(vm);
 
     // Debug:
+    //std::cout << desc << "\n";
     for (auto kv : exceptions) {
         std::cout << kv.first << " =";
         for (auto v : kv.second)
@@ -53,30 +77,12 @@ int main(int argc, char **argv) {
     }
 
     // ----- Generiere Plan -----
-    for (std::string site : {"r", "s"}) {
-        cal::week_iterator week_it(begin);
-        std::ofstream fout("dates_" + site + ".txt", std::ios::trunc);
+    for (char site : {'R', 'S'}) {
+        std::ofstream fout(std::string("dates_")
+            + (char) std::tolower(site) + ".txt", std::ios::trunc);
 
-        for (int i = 0; i < weeks_to_print; ++i) {
-            const auto week_begin = *week_it;
-            const auto week_end   = *++week_it - cal::days(1);
-
-            fout << std::setw(2) << std::setfill('0') << week_begin.week_number() // Kalenderwoche
-                 << " & " << std::setw(2) << std::setfill('0') << (int) week_begin.day()   << "."
-                          << std::setw(2) << std::setfill('0') << (int) week_begin.month() << "."
-                 << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
-                          << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
-
-            const int diff = (week_begin - start).days() / 7;
-            for (int j = 0; j < task_cols; ++j) {
-                const int index = (j - diff) % (int) rooms_tex.size();
-                fout << " & " << rooms_tex[(index + rooms_tex.size()) % rooms_tex.size()];
-            }
-
-            fout << " \\\\\n";
-        }
+        schedule(fout);
     }
 
-	//system("pause");
     return 0;
 }
