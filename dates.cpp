@@ -11,7 +11,9 @@
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
 
-void schedule(std::ofstream &fout) {
+typedef std::vector<std::vector<int>> except_room_tasks_t;
+
+void schedule(std::ofstream &fout, except_room_tasks_t &exceptions) {
     // ----- Feste Einstellungen -----
     const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
     const std::vector<std::string> rooms_tex = {
@@ -81,7 +83,13 @@ int main(int argc, char **argv) {
         std::ofstream fout(std::string("dates_")
             + (char) std::tolower(site) + ".txt", std::ios::trunc);
 
-        schedule(fout);
+        // Ausnahmen nach Seite filtern
+        except_room_tasks_t except;
+        for (auto &kv : exceptions)
+            if (kv.first[0] == site)
+                except.push_back(kv.second);
+
+        schedule(fout, except);
     }
 
     return 0;
