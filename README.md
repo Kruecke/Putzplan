@@ -1,4 +1,5 @@
 # Putzplan
+[![Build Status](https://travis-ci.org/Kruecke/Putzplan.svg?branch=master)](https://travis-ci.org/Kruecke/Putzplan)
 
 Baut einen aktuellen Putzplan für beide WG-Seiten mit einem `make`.
 
