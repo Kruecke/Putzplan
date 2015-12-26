@@ -43,12 +43,19 @@ void schedule(std::ofstream &fout, except_room_tasks_t &exceptions) {
              << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
                       << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
 
+        // Aufgaben in der Woche
         const int diff = (week_begin - start).days() / 7;
-        for (int j = 0; j < task_cols; ++j) {
+        for (int task = 0; task < task_cols; ++task) {
             const int rsize = rooms_tex.size();
-            const int index = (((j - diff) % rsize) + rsize) % rsize;
+            const int index = (((task - diff) % rsize) + rsize) % rsize;
 
-            fout << " & " << rooms_tex[index];
+            // Filtere Ausnahmen
+            const auto &except = exceptions[index];
+            if (std::find(except.begin(), except.end(), task + 1) != except.end()) {
+                std::cout << "Ausnahme: " << rooms_tex[index] << " & " << (task + 1) << "\n"; // Debug
+                fout << " & --- "; // TODO: Ersatz einfügen
+            } else
+                fout << " & " << rooms_tex[index];
         }
 
         fout << " \\\\\n";
@@ -69,21 +76,13 @@ int main(int argc, char **argv) {
     po::store(po::parse_config_file(config, desc), vm);
     po::notify(vm);
 
-    // Debug:
-    //std::cout << desc << "\n";
-    for (auto kv : exceptions) {
-        std::cout << kv.first << " =";
-        for (auto v : kv.second)
-            std::cout << " " << v;
-        std::cout << "\n";
-    }
-
     // ----- Generiere Plan -----
     for (char site : {'R', 'S'}) {
         std::ofstream fout(std::string("dates_")
             + (char) std::tolower(site) + ".txt", std::ios::trunc);
 
         // Ausnahmen nach Seite filtern
+        // (Reihenfolge stimmt, da map ordered ist.)
         except_room_tasks_t except;
         for (auto &kv : exceptions)
             if (kv.first[0] == site)
