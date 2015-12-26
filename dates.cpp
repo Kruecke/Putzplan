@@ -5,8 +5,6 @@
 #include <map>
 #include <string>
 #include <vector>
-// Debug:
-#include <iostream>
 
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
@@ -52,7 +50,6 @@ void schedule(std::ofstream &fout, except_room_tasks_t &exceptions) {
             // Filtere Ausnahmen
             const auto &except = exceptions[index];
             if (std::find(except.begin(), except.end(), task + 1) != except.end()) {
-                std::cout << "Ausnahme: " << rooms_tex[index] << " & " << (task + 1) << "\n"; // Debug
                 fout << " & --- "; // TODO: Ersatz einfügen
             } else
                 fout << " & " << rooms_tex[index];
