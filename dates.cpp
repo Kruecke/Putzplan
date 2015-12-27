@@ -41,18 +41,22 @@ void schedule(std::ofstream &fout, except_room_tasks_t &exceptions) {
              << " & " << std::setw(2) << std::setfill('0') << (int) week_end.day()     << "."
                       << std::setw(2) << std::setfill('0') << (int) week_end.month()   << ".";
 
-        // Aufgaben in der Woche
+        // Zuweisung der Aufgaben in der Woche
         const int diff = (week_begin - start).days() / 7;
+        int offset = 0;
         for (int task = 0; task < task_cols; ++task) {
             const int rsize = rooms_tex.size();
-            const int index = (((task - diff) % rsize) + rsize) % rsize;
+            const int index = (((task - diff + offset) % rsize) + rsize) % rsize;
 
-            // Filtere Ausnahmen
+            // Überspringe Ausnahmen
             const auto &except = exceptions[index];
             if (std::find(except.begin(), except.end(), task + 1) != except.end()) {
-                fout << " & --- "; // TODO: Ersatz einfügen
-            } else
-                fout << " & " << rooms_tex[index];
+                ++offset; // Überspringe Raum
+                --task;   // Versuche den gleichen Task...
+                continue; // ...nochmal.
+            }
+
+            fout << " & " << rooms_tex[index];
         }
 
         fout << " \\\\\n";
@@ -79,11 +83,10 @@ int main(int argc, char **argv) {
             + (char) std::tolower(site) + ".txt", std::ios::trunc);
 
         // Ausnahmen nach Seite filtern
-        // (Reihenfolge stimmt, da map ordered ist.)
         except_room_tasks_t except;
         for (auto &kv : exceptions)
             if (kv.first[0] == site)
-                except.push_back(kv.second);
+                except.push_back(kv.second); // Reihenfolge stimmt, da map ordered ist.
 
         schedule(fout, except);
     }
