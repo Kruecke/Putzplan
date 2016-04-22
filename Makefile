@@ -8,24 +8,26 @@ all: $(BUILDDIR)/Putzplan.pdf
 
 $(BUILDDIR)/Putzplan.pdf: Putzplan.tex $(BUILDDIR)/dates_r.txt $(BUILDDIR)/dates_s.txt
 	@echo ===== Building $@ =====
-	# Workaround, if user is www-data:
-	#HOME=/var/www; export HOME; \
-	mkdir -p $(BUILDDIR); \
+	mkdir -p $(BUILDDIR)
+	# Workaround: If user is www-data, uncomment following line and add trailing backslash.
+	#HOME=/var/www; export HOME;
 	cd $(BUILDDIR); \
 	pdflatex $(abspath $<)
 
 $(BUILDDIR)/dates_r.txt $(BUILDDIR)/dates_s.txt: $(BUILDDIR)/dates $(BUILDDIR)/config.ini
 	@echo ===== Running $< =====
-	mkdir -p $(BUILDDIR); \
+	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); \
 	$(abspath $<)
 
 $(BUILDDIR)/dates: dates.cpp
 	@echo ===== Building $@ =====
+	mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDLIBS)
 
 $(BUILDDIR)/config.ini: config.ini
 	@echo ===== Creating $@ =====
+	mkdir -p $(BUILDDIR)
 	cp $< $@
 
 .PHONY: clean
