@@ -1,20 +1,35 @@
 CXXFLAGS := -std=c++11 -Wall
 LDLIBS   := -lboost_program_options
 
-all: Putzplan.pdf
+BUILDDIR := build
 
-Putzplan.pdf: Putzplan.tex dates_r.txt dates_s.txt
-	pdflatex $<
+.PHONY: all
+all: $(BUILDDIR)/Putzplan.pdf
 
-dates_r.txt dates_s.txt: dates config.ini
-	./$<
+$(BUILDDIR)/Putzplan.pdf: Putzplan.tex $(BUILDDIR)/dates_r.txt $(BUILDDIR)/dates_s.txt
+	@echo ===== Building $@ =====
+	# Workaround, if user is www-data:
+	#HOME=/var/www; export HOME; \
+	mkdir -p $(BUILDDIR); \
+	cd $(BUILDDIR); \
+	pdflatex $(abspath $<)
 
-dates: dates.cpp
+$(BUILDDIR)/dates_r.txt $(BUILDDIR)/dates_s.txt: $(BUILDDIR)/dates $(BUILDDIR)/config.ini
+	@echo ===== Running $< =====
+	mkdir -p $(BUILDDIR); \
+	cd $(BUILDDIR); \
+	$(abspath $<)
+
+$(BUILDDIR)/dates: dates.cpp
+	@echo ===== Building $@ =====
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDLIBS)
+
+$(BUILDDIR)/config.ini: config.ini
+	@echo ===== Creating $@ =====
+	cp $< $@
 
 .PHONY: clean
 clean:
-	rm -f dates
-	rm -f dates_r.txt
-	rm -f dates_s.txt
-	rm -f Putzplan.log
-	rm -f Putzplan.aux
+	@echo ===== Cleaning $(BUILDDIR) =====
+	rm -f $(BUILDDIR)/dates_*.txt
+	rm -f $(BUILDDIR)/Putzplan.*
