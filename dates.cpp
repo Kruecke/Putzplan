@@ -11,10 +11,11 @@
 namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
 
+// Speichert zu jedem Zimmer, welche Aufgaben nicht zugeteilt werden dürfen.
 typedef std::vector<std::vector<int>> except_room_tasks_t;
 
-// Hilfskonstrukt, um Räume für Aufgaben zu finden
-// und vergangene Einsprünge anderer Räume zu berücksichtigen.
+// Hilfskonstrukt, um Zimmer für Aufgaben zu finden
+// und vergangene Einsprünge anderer Zimmer zu berücksichtigen.
 class helpout_map {
 public:
     helpout_map(const std::vector<std::string> &rooms,
@@ -28,7 +29,7 @@ public:
     std::string schedule_room_for_task(int room_index, int task_index) {
         const auto &except = m_exceptions[room_index];
         if (std::find(except.begin(), except.end(), task_index + 1) == except.end()) {
-            // Wenn der Raum die Aufgabe machen kann, wird er eingeteilt.
+            // Wenn das ursprüngliche Zimmer die Aufgabe machen kann, wird es eingeteilt.
             return m_rooms[room_index];
         }
 
@@ -81,7 +82,7 @@ void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
     helpout_map helpout(rooms_tex, exceptions);
 
     // ----- Vorlauf -----
-    // Ermittle, wie oft andere Räume bereits eingesprungen sind,
+    // Ermittle, wie oft andere Zimmer bereits eingesprungen sind,
     // damit gegenwärtige Pläne konsistent sind.
     for (auto past_it = cal::week_iterator(start); *past_it != begin; ++past_it) {
         const int diff = (*past_it - start).days() / 7;
@@ -89,7 +90,7 @@ void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
             const int rsize = rooms_tex.size();
             const int index = (((task - diff) % rsize) + rsize) % rsize;
 
-            // Verplane Raum für Aufgabe, ignoriere Ergebnis.
+            // Verplane Zimmer für Aufgabe, ignoriere Ergebnis.
             helpout.schedule_room_for_task(index, task);
         }
     }
@@ -113,7 +114,7 @@ void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
             const int rsize = rooms_tex.size();
             const int index = (((task - diff) % rsize) + rsize) % rsize;
 
-            // Verplane Raum für Aufgabe.
+            // Verplane Zimmer für Aufgabe.
             fout << " & " << helpout.schedule_room_for_task(index, task);
         }
 
@@ -140,7 +141,7 @@ int main(int argc, char **argv) {
         std::ofstream fout(std::string("dates_")
             + (char) std::tolower(site) + ".txt", std::ios::trunc);
 
-        // Ausnahmen nach Seite filtern.
+        // Ausnahmen nach Seite (Flur) filtern.
         except_room_tasks_t except;
         for (auto &kv : exceptions)
             if (kv.first[0] == site)
