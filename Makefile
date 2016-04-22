@@ -9,8 +9,8 @@ all: $(BUILDDIR)/Putzplan.pdf
 $(BUILDDIR)/Putzplan.pdf: Putzplan.tex $(BUILDDIR)/dates_r.txt $(BUILDDIR)/dates_s.txt
 	@echo ===== Building $@ =====
 	mkdir -p $(BUILDDIR)
-	# Workaround: If user is www-data, uncomment following line and add trailing backslash.
-	#HOME=/var/www; export HOME;
+	# Workaround: HOME env. variable is not properly set when called by webserver.
+	HOME=$(abspath $(BUILDDIR)); export HOME; \
 	cd $(BUILDDIR); \
 	pdflatex $(abspath $<)
 

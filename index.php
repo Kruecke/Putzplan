@@ -34,7 +34,7 @@
     // Initial creation of configuration file.
     if (!file_exists($cfg_path)) {
         if (!is_dir($builddir))
-            mkdir($builddir, 755, true);
+            mkdir($builddir, 0755, true);
         copy($config, $cfg_path);
     }
 
