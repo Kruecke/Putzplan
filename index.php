@@ -16,14 +16,14 @@
     $cfg_path = "$builddir/$config";
 
     if (file_exists($pp_path)) {
-        echo "<p>Letzter <a href=\"$pp_path\">$putzplan</a> vom ";
-        echo date("d.m.Y, H:i", filemtime($pp_path)) . " Uhr.</p>\n";
+        echo "<p><strong>Download</strong>: <a href=\"$pp_path\">$putzplan</a>\n";
+        echo "vom " . date("d.m.Y, H:i", filemtime($pp_path)) . " Uhr.</p>\n";
     } else {
         echo "<p>Es wurde noch kein Putzplan generiert.</p>\n";
     }
 ?>
-<p>Aktuellen Putzplan <a href="generate.php">generieren</a>!<br/>
-(Kann einige Sekunden in Anspruch nehmen.)</p>
+<p><strong>Aktualisieren</strong>: Neuen Putzplan <a href="generate.php">generieren</a>!
+<br/>(Kann einige Sekunden in Anspruch nehmen.)</p>
 
 <h2>Einstellungen</h2>
 <?php
