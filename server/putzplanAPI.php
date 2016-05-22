@@ -90,19 +90,17 @@ class putzplanAPI {
 	//GENERATE
 	private function generateReturn(){
 		$this->Return['state'] = 'generate';
-//		    $command = "make clean $pp_path 2>&1";
-//		    exec($command, $output, $return_var);
-// DEBUG COMMENT
-			$output = "TEST LOG OUTPUT";		
-			$return_var = 1;
-	    if ($return_var == 0) {
-        	$status = "success";
-    	}else {
+		$command = "make clean $pp_path 2>&1";
+		exec($command, $output, $return_var);
+		
+		if ($return_var == 0) {
+        		$status = "success";
+    		}else {
 			$status = "failed";	
-	    }
+	    	}
 		$content = array(	"status" => $status,
-							"log" => $output
-						);
+					"log" => $output
+				);
 		$this->Return['content'] = $content;
 	}
 	// DOWNLOAD
