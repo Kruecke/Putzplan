@@ -1,0 +1,74 @@
+/* Space out content a bit */
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    background: #2F3135 url('../img/index.png');
+    color: #373a3c;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.container-narrow > hr {
+  margin: 2rem 0;
+}
+
+/* Main marketing message and sign up button */
+.content {
+  text-align: center;
+  font-size: 18px;
+  border-bottom: .05rem solid #e5e5e5;
+  border-radius: 6px;
+  padding-right: 60px;
+  padding-left: 60px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+  margin-bottom: 30px;
+  color: inherit;
+  background-color: #eee;
+}
+.content .heading{
+	font-size:5rem;
+}
+.content form{
+  padding: 1.5rem 2.5rem;
+  font-size: 2.5rem;
+}
+.content .topform .btn {
+  padding: 0.5rem 1.5rem;
+  font-size: 2rem;
+}
+.Display{
+    display:block;
+}
+.dontDisplay{
+    display:none;
+}
+#malert{
+	border:1px solid green;
+	margin-top: 20px;
+	min-height: 80px;
+}
+.well{
+	text-align:left;
+	font-size: 12pt;
+};
+.well samp{
+	!text-align: left;
+	font-size: 12pt;
+}
+/* DOWNLOAD/GENERATE SECTION */
+.generate{
+	min-height:30px;
+}
+.download{
+	min-height:30px;
+}
