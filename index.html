@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" ng-app="constellation">
+<head>
+  <meta charset="utf-8">
+  <title>Putzplan</title>
+  <link rel="stylesheet" href="client/css/bootstrap.min.css">
+  <link rel="stylesheet" href="client/css/app.css">
+</head>
+<body>
+	<script src="client/js/jquery-2.2.4.min.js"></script>
+	<script src="client/js/bootstrap.min.js"></script>
+	<script src="client/js/angular.min.js"></script>
+	<script src="client/js/app.js"></script>
+
+	<div class="container" ng-controller="MainController as main">
+        <div class="content">
+    		<h1 class="heading">Putzplan</h1>
+	    	<p class="lead"> at your service!</p>
+			<div class="container-fluid topform">
+				<div class="row">
+					<div class="col-md-6 generate">
+						<p>Generiere einen neuen Putzplan.</p>
+						<a class="btn btn-default btn-success" role="button" ng-click="main.req('generate')">Generieren</a>
+					</div> <!-- .col-md-6 -->
+					<div class="col-md-6 download" ng-model="pdfURL">
+						<p ng-model="main.datum" >Download des Putzplans {{main.datum}}</p>
+						<a class="btn btn-default btn-success" role="button" ng-click="main.req('download')">Download</a>
+					</div> <!-- .col-md-6 -->
+				</div> <!-- .row -->
+			</div><!-- .container-fluid -->
+            <div id="malert" class="alert" ng-class="messageAlert">
+                <p id="message" ng-model="main.msg">
+                    <p id="loading" class="dontDisplay" ng-class="showLoading">loading...</p>
+					<p>{{main.msg}}</p>
+					<div id="log" class="dontDisplay" ng-class="showLog" ng-model="main.log">
+						<button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Log anzeigen / ausblenden</button>
+						<div class="collapse" id="collapseExample">
+						<div class="well">
+							<samp ng-model="main.log">{{main.log}}
+							</samp>
+						</div>
+						</div>
+					</div>
+                </p>
+            </div> <!-- #malert -->
+			<div id="config">
+				<form action="" method="">
+				Einstellungen:
+			    <textarea ng-model="main.config" class="form-control" name="config" cols="80" rows="10"></textarea>
+				</form>
+				<a class="btn btn-default btn-sm" role="button" ng-click="main.req('save')">Einstellungen speichern</a>
+				<a class="btn btn-default btn-sm" role="button" ng-click="main.req('reset')">Einstellungen zurücksetzen</a>
+			</div> <!-- #config -->			
+        </div> <!-- .jumbotron -->
+	</div> <!-- .container main -->
+
+</body>
+</html>
