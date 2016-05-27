@@ -110,7 +110,7 @@ class putzplanAPI {
 	// DOWNLOAD
 	private function downloadReturn(){
 		$this->Return['state'] = 'download';
-		if( file_exists($_SERVER['DOCUMENT_ROOT']."/build/Putzplan.pdf") )
+		if( file_exists($this->pp_path) )
 			$status = "available";
 		else 
 			$status = "available";
