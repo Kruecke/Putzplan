@@ -98,8 +98,12 @@ class putzplanAPI {
     		}else {
 			$status = "failed";	
 	    	}
+	    	$log_output;
+	    	foreach($output as $line)
+	    		$log_output += htmlspecialchars($line) . "<br/>\n";
+	    		
 		$content = array(	"status" => $status,
-					"log" => $output
+					"log" => $log_output;
 				);
 		$this->Return['content'] = $content;
 	}
