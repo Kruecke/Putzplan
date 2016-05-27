@@ -90,7 +90,7 @@ class putzplanAPI {
 	//GENERATE
 	private function generateReturn(){
 		$this->Return['state'] = 'generate';
-		$command = "make clean $pp_path 2>&1";
+		$command = "make clean $this->pp_path 2>&1";
 		exec($command, $output, $return_var);
 		
 		if ($return_var == 0) {
