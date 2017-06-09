@@ -29,11 +29,11 @@
 <p><a href="index.php">Zurück</a> zur Startseite.</p>
 
 <h2>Log Ausgabe</h2>
-<samp>
+<textarea cols="80" rows="10">
 <?php
     foreach ($output as $line)
-        echo htmlspecialchars($line) . "<br/>\n";
+        echo htmlspecialchars($line) . "\n";
 ?>
-</samp>
+</textarea>
 </body>
 </html>
