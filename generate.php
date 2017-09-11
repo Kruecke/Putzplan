@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8"/>
-    <title>Putzplan</title>
-</head>
-
-<body>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?php
+    header('Content-type: application/xml');
+
     // Settings. Compare to Makefile.
     $builddir = "build";
     $putzplan = "Putzplan.pdf";
@@ -14,26 +9,17 @@
 
     $command = "make clean $pp_path 2>&1";
     exec($command, $output, $return_var);
-
-    if ($return_var == 0) {
-        echo "<h1>Generierung erfolgreich! :)</h1>\n";
-        echo "<p><strong>Download</strong>: <a href=\"$pp_path\">$putzplan</a>\n";
-        echo "vom " . date("d.m.Y, H:i", filemtime($pp_path)) . " Uhr.</p>\n";
-    } else {
-        echo "<h1>Generierung fehlgeschlagen! :(</h2>\n";
-        echo "<p>Schau' dir die Log Ausgaben an, vielleicht kannst du den Fehler bereits erkennen.<br/>\n";
-        echo "Ansonsten melde den Fehler mit möglichst genauer Beschreibung bei\n";
-        echo "<a href=\"https://github.com/Kruecke/Putzplan/issues\">GitHub</a>.</p>\n";
-    }
 ?>
-<p><a href="index.php">Zurück</a> zur Startseite.</p>
 
-<h2>Log Ausgabe</h2>
-<textarea cols="80" rows="10">
-<?php
-    foreach ($output as $line)
-        echo htmlspecialchars($line) . "\n";
-?>
-</textarea>
-</body>
-</html>
+<buildinfo>
+    <status>
+        <?php echo $return_var; ?>
+    </status>
+
+    <log>
+        <?php
+            foreach ($output as $line)
+                echo htmlspecialchars($line) . "\n";
+        ?>
+    </log>
+</buildinfo>
