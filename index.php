@@ -129,7 +129,7 @@
             </div>
             <div class="panel-footer">
                 Ursprüngliche Einstellungen <a href="?reset_config">wiederherstellen</a>!
-                (Siehe <a href="https://github.com/Kruecke/Putzplan/blob/master/config.ini">GitHub</a>)
+                (Siehe <a href="https://github.com/fklemme/Putzplan/blob/master/config.ini">GitHub</a>)
             </div>
         </div>
     </div>
