@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<?php include "settings.php"; ?>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -27,16 +30,9 @@
             </div>
             <div class="panel-body">
                 <?php
-                    // Settings. Compare to Makefile.
-                    $builddir = "build";
-                    $putzplan = "Putzplan.pdf";
-                    $pp_path  = "$builddir/$putzplan";
-                    $config   = "config.ini";
-                    $cfg_path = "$builddir/$config";
-
-                    if (file_exists($pp_path)) {
-                        echo "<a href=\"$pp_path\">$putzplan</a>\n";
-                        echo "vom " . date("d.m.Y, H:i", filemtime($pp_path)) . " Uhr.\n";
+                    if (file_exists("$builddir/$putzplan")) {
+                        echo "<a href=\"$buildlnk/$putzplan\">$putzplan</a>\n";
+                        echo "vom " . date("d.m.Y, H:i", filemtime("$builddir/$putzplan")) . " Uhr.\n";
                     } else {
                         echo "Es wurde noch kein Putzplan generiert.\n";
                     }
@@ -65,7 +61,7 @@
                                     document.getElementById("buildstatus").innerHTML =
                                         "<div class=\"alert alert-success\" role=\"alert\" style=\"margin-bottom:0;\">" +
                                         "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> " +
-                                        <?php echo "\"<a href=\\\"$pp_path\\\">$putzplan</a>\""; ?> +
+                                        <?php echo "\"<a href=\\\"$buildlnk/$putzplan\\\">$putzplan</a>\""; ?> +
                                         " erfolgreich erstellt!</div>";
                                 } else {
                                     document.getElementById("buildstatus").innerHTML =
@@ -106,21 +102,21 @@
                 <?php
                     // Reset configuration.
                     if (isset($_GET["reset_config"]))
-                        unlink($cfg_path);
+                        unlink("$builddir/$config");
 
                     // Initial creation of configuration file.
-                    if (!file_exists($cfg_path)) {
+                    if (!file_exists("$builddir/$config")) {
                         if (!is_dir($builddir))
                             mkdir($builddir, 0755, true);
-                        copy($config, $cfg_path);
+                        copy($config, "$builddir/$config");
                     }
 
                     // Update configuration file.
                     if (isset($_POST["config"]))
-                        file_put_contents($cfg_path, htmlspecialchars($_POST["config"]));
+                        file_put_contents("$builddir/$config", htmlspecialchars($_POST["config"]));
                 ?>
                 <form action="" method="post">
-                    <textarea class="form-control" rows="10" id="config" name="config"><?php echo file_get_contents($cfg_path); ?></textarea>
+                    <textarea class="form-control" rows="10" id="config" name="config"><?php echo file_get_contents("$builddir/$config"); ?></textarea>
                     <div class="btn-group">
                         <input type="submit" class="btn btn-default">
                         <input type="reset" class="btn btn-default">

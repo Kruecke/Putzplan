@@ -1,7 +1,7 @@
 CXXFLAGS := -std=c++11 -Wall
 LDLIBS   := -lboost_program_options
 
-BUILDDIR := build
+BUILDDIR ?= build
 
 .PHONY: all
 all: $(BUILDDIR)/Putzplan.pdf

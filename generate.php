@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <?php
     header('Content-type: application/xml');
 
-    // Settings. Compare to Makefile.
-    $builddir = "build";
-    $putzplan = "Putzplan.pdf";
-    $pp_path  = "$builddir/$putzplan";
+    include "settings.php";
 
-    $command = "make clean $pp_path 2>&1";
+    $command = "make BUILDDIR=\"$builddir\" clean all 2>&1";
     exec($command, $output, $return_var);
 ?>
 
