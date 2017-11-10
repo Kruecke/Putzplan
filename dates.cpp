@@ -65,9 +65,9 @@ private:
 void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
     // ----- Feste Einstellungen -----
     const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
+    const int task_cols      = 6; // Anzahl der Aufgaben (Spalten) in der Vorlage
     const std::vector<std::string> rooms_tex = {
         "\\aaa", "\\bbb", "\\ccc", "\\ddd", "\\eee", "\\fff"};
-    const int task_cols = 5;
 
     // Helfer zum Rechnen mit Wochen
     const cal::first_day_of_the_week_before fmondaybf(cal::Monday);
