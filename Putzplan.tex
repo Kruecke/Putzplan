@@ -1,12 +1,16 @@
 \documentclass[landscape]{slides}
 
-\usepackage[margin=0.5cm]{geometry}
+% Margin ist für die Breite der Tabelle angepasst
+% und muss bei Änderung ggf. neu eingestellt werden.
+\usepackage[a4paper,margin=1.2cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
+
+\pagestyle{empty}
 
 \definecolor{bgcolor}{rgb}{0.85, 0.85, 0.85}
 \newcommand{\aaa}{\color{black}  \seite{}101}
@@ -21,67 +25,69 @@
 % ========== R Seite ==========
 \newcommand{\seite}{R}
 
+\begin{slide}
 \begin{center}
 \Large Putzplan
 \end{center}
 
-\resizebox{\textwidth}{!}{
+\begin{small}
 \rowcolors{3}{white}{bgcolor}
 \begin{tabular}{rrrccccccc}
     \toprule
     & & & \multicolumn{2}{c}{Küche} \\ \cmidrule{4-5}
-    \multicolumn{3}{c}{Kalenderwoche} & Aufg.~1 & Aufg.~2 & Flur & Duschen & Toiletten & Waschen \\ \midrule
+    \multicolumn{3}{c}{Kalenderwoche} & Aufgabe~1 & Aufgabe~2 & Flur & Duschen & Toiletten & Handtücher \\ \midrule
 
     % Generiere Daten mit 'dates'
     \input{dates_r.txt}
 
     \bottomrule
 \end{tabular}
-}
+\end{small}
 
 \begin{tiny}
 \begin{description}
     \setlength{\itemsep}{0pt}
     \item[Aufgabe~1] Boden wischen, Müll und Altglas rausbringen.
     \item[Aufgabe~2] Arbeitsplatten, Tische, Fensterbrett und Kühlschränke abwischen, ggf. Ofen reinigen.
-    \item[Waschen] Duschvorhänge sowie Handtücher in Küche und Toiletten austauschen und waschen.
+    \item[Handtücher] in Küche und Toiletten des Flurs austauschen und waschen, ggf. auch die Duschvorhänge.
 \end{description}
-
+\vspace{-1em}
 \hfill http://putzplan.kruecke.net/
 \end{tiny}
-
-\clearpage
+\end{slide}
 
 % ========== S Seite ==========
 \renewcommand{\seite}{S}
 
+\begin{slide}
 \begin{center}
 \Large Putzplan
 \end{center}
 
-\resizebox{\textwidth}{!}{
+\begin{small}
 \rowcolors{3}{white}{bgcolor}
 \begin{tabular}{rrrccccccc}
     \toprule
     & & & \multicolumn{2}{c}{Küche} \\ \cmidrule{4-5}
-    \multicolumn{3}{c}{Kalenderwoche} & Aufg.~1 & Aufg.~2 & Flur & Duschen & Toiletten & Waschen \\ \midrule
+    \multicolumn{3}{c}{Kalenderwoche} & Aufgabe~1 & Aufgabe~2 & Flur & Duschen & Toiletten & Handtücher \\ \midrule
 
     % Generiere Daten mit 'dates'
     \input{dates_s.txt}
 
     \bottomrule
 \end{tabular}
-}
+\end{small}
 
 \begin{tiny}
 \begin{description}
     \setlength{\itemsep}{0pt}
     \item[Aufgabe~1] Boden wischen, Müll und Altglas rausbringen.
     \item[Aufgabe~2] Arbeitsplatten, Tische, Fensterbrett und Kühlschränke abwischen, ggf. Ofen reinigen.
-    \item[Waschen] Duschvorhänge sowie Handtücher in Küche und Toiletten austauschen und waschen.
+    \item[Handtücher] in Küche und Toiletten des Flurs austauschen und waschen, ggf. auch die Duschvorhänge.
 \end{description}
-
+\vspace{-1em}
 \hfill http://putzplan.kruecke.net/
 \end{tiny}
+\end{slide}
 
 \end{document}
