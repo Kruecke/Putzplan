@@ -12,17 +12,17 @@ namespace cal = boost::gregorian;
 namespace po  = boost::program_options;
 
 // Speichert zu jedem Zimmer, welche Aufgaben nicht zugeteilt werden dürfen.
-typedef std::vector<std::vector<int>> except_room_tasks_t;
+using except_room_tasks_t = std::vector<std::vector<int>>;
 
-// Hilfskonstrukt, um Zimmer für Aufgaben zu finden
-// und vergangene Einsprünge anderer Zimmer zu berücksichtigen.
+// Hilfskonstrukt, um Zimmer für Aufgaben zu finden und
+// vergangene Einsprünge anderer Zimmer zu berücksichtigen.
 class helpout_map {
 public:
-    helpout_map(const std::vector<std::string> &rooms,
+    helpout_map(const std::vector<std::string> &rooms_tex,
                 const except_room_tasks_t      &exceptions)
-        : m_rooms(rooms), m_exceptions(exceptions)
+        : m_rooms_tex{rooms_tex}, m_exceptions{exceptions}
     {
-        for (std::size_t i = 0; i < m_rooms.size(); ++i)
+        for (std::size_t i = 0; i < m_rooms_tex.size(); ++i)
             m_helpedout.emplace_back(i, 0);
     }
 
@@ -30,12 +30,13 @@ public:
         const auto &except = m_exceptions[room_index];
         if (std::find(except.begin(), except.end(), task_index + 1) == except.end()) {
             // Wenn das ursprüngliche Zimmer die Aufgabe machen kann, wird es eingeteilt.
-            return m_rooms[room_index];
+            return m_rooms_tex[room_index];
         }
 
         // Ansonsten, finde Ersatz.
-        auto helped = m_helpedout; // Kopie
-        sort(helped.begin(), helped.end(), // Sortiere nach Häufigkeit des Einspringens.
+        auto helpedout = m_helpedout; // Kopie
+        // Sortiere nach Häufigkeit des Einspringens.
+        std::stable_sort(helpedout.begin(), helpedout.end(),
             [](const std::pair<int, int> &a, const std::pair<int, int> &b) {
                 if (a.second != b.second)
                     return a.second < b.second;
@@ -43,12 +44,12 @@ public:
                     return a.first < b.first;
             });
         // Schaue, wer einspringen kann.
-        for (auto p : helped) {
+        for (auto p : helpedout) {
             const auto &except = m_exceptions[p.first];
             if (std::find(except.begin(), except.end(), task_index + 1) == except.end()) {
                 // Ersatz gefunden!
                 ++m_helpedout[p.first].second; // Einsprung merken
-                return m_rooms[p.first];
+                return m_rooms_tex[p.first];
             }
         }
 
@@ -57,20 +58,20 @@ public:
     }
 
 private:
-    const std::vector<std::string>   m_rooms;
+    const std::vector<std::string>   m_rooms_tex;
     const except_room_tasks_t        m_exceptions;
     std::vector<std::pair<int, int>> m_helpedout;
 };
 
 void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
     // ----- Feste Einstellungen -----
-    const int weeks_to_print = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
-    const int task_cols      = 6; // Anzahl der Aufgaben (Spalten) in der Vorlage
+    const int week_rows = 15; // Anzahl der Wochen (Zeilen) in der Vorlage
+    const int task_cols = 6;  // Anzahl der Aufgaben (Spalten) in der Vorlage
     const std::vector<std::string> rooms_tex = {
         "\\aaa", "\\bbb", "\\ccc", "\\ddd", "\\eee", "\\fff"};
 
     // Helfer zum Rechnen mit Wochen
-    const cal::first_day_of_the_week_before fmondaybf(cal::Monday);
+    const auto fmondaybf = cal::first_day_of_the_week_before{cal::Monday};
 
     // In der Woche vom 01.01.2015 startete Zimmer 101
     // ('\aaa' in der LaTeX Vorlage) mit der ersten Aufgabe.
@@ -88,16 +89,16 @@ void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
         const int diff = (*past_it - start).days() / 7;
         for (int task = 0; task < task_cols; ++task) {
             const int rsize = rooms_tex.size();
-            const int index = (((task - diff) % rsize) + rsize) % rsize;
+            const int room = (((task - diff) % rsize) + rsize) % rsize;
 
             // Verplane Zimmer für Aufgabe, ignoriere Ergebnis.
-            helpout.schedule_room_for_task(index, task);
+            helpout.schedule_room_for_task(room, task);
         }
     }
 
     // ----- Generiere Plan -----
     cal::week_iterator week_it(begin);
-    for (int i = 0; i < weeks_to_print; ++i) {
+    for (int i = 0; i < week_rows; ++i) {
         const auto week_begin = *week_it;
         const auto week_end   = *++week_it - cal::days(1);
 
@@ -112,10 +113,10 @@ void schedule(std::ofstream &fout, const except_room_tasks_t &exceptions) {
         const int diff = (week_begin - start).days() / 7;
         for (int task = 0; task < task_cols; ++task) {
             const int rsize = rooms_tex.size();
-            const int index = (((task - diff) % rsize) + rsize) % rsize;
+            const int room = (((task - diff) % rsize) + rsize) % rsize;
 
             // Verplane Zimmer für Aufgabe.
-            fout << " & " << helpout.schedule_room_for_task(index, task);
+            fout << " & " << helpout.schedule_room_for_task(room, task);
         }
 
         fout << " \\\\\n";
