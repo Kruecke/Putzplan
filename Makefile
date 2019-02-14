@@ -35,3 +35,12 @@ clean:
 	@echo ===== Cleaning $(BUILDDIR) =====
 	rm -f $(BUILDDIR)/dates_*.txt
 	rm -f $(BUILDDIR)/Putzplan.*
+
+# For development & testing
+.PHONY: docker-up
+docker-up:
+	docker-compose up -d
+
+.PHONY: docker-down
+docker-down:
+	docker-compose down
