@@ -1,0 +1,13 @@
+image: ubuntu:20.04
+
+build:
+  stage: build
+  before_script:
+    - export DEBIAN_FRONTEND=noninteractive
+    - apt-get update
+    - apt-get install -y
+        make g++
+        libboost-date-time-dev libboost-program-options-dev
+        texlive texlive-lang-german
+  script:
+    - make

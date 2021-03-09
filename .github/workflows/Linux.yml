@@ -1,0 +1,25 @@
+name: Linux
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install \
+            make g++ \
+            libboost-date-time-dev libboost-program-options-dev \
+            texlive texlive-lang-german
+
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: make
